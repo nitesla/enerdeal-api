@@ -5,8 +5,8 @@ name: enerdeal-api
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the develop branch
-  push:
-    branches: [ main ]
+ # push:
+ #   branches: [ main ]
 #  pull_request:
 #    branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
@@ -40,8 +40,9 @@ jobs:
           sudo ./aws/install --update
       - name: Build Image
         run: |
-          echo building project into container
-          mvn -Pprod clean install -Dmaven.test.skip=true -e
+          echo "building project into container"
+          mvn clean
+          mvn package
           
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

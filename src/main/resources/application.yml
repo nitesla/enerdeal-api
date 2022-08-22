@@ -1,0 +1,33 @@
+
+
+
+
+#Application properties
+#server:
+#  port: 1043
+
+
+#AWS properties
+cloud:
+  aws:
+    region:
+      static: eu-west-2
+    stack:
+      auto: false
+    credentials:
+      accessKey: AKIAX4DRYAN3H6QOUQGQ
+      secretKey: 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
+
+application:
+  bucket:
+    name: sabienerdeal
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+
+
+

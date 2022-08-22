@@ -1,0 +1,40 @@
+version: 0.2
+
+env:
+  variables:
+    ENV_NAME: qa
+
+phases:
+  pre_build:
+    commands:
+      - mvn clean
+      - echo Maven clean successfully executed...
+      - mvn package
+      - echo Maven package successfully executed...
+      - echo Logging in to Amazon ECR...
+      - pip install --upgrade awscli==1.18.17
+      - echo AWSCLI upgraded successfully...
+      - aws --version
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - REPOSITORY_URI=541404431222.dkr.ecr.eu-west-2.amazonaws.com/sabi-enerdeal-api-qa
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file...
+      - printf '[{"name":"order-service","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > qaimagedefinitions.json
+      - cat qaimagedefinitions.json
+artifacts:
+  files:
+   - qaimagedefinitions.json
+   - target/enerdeal-1.0.jar

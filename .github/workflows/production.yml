@@ -68,7 +68,7 @@ jobs:
         run: aws --version
       - name: Define Task Defination
         run: |
-          aws ecs register-task-definition --region eu-central-1 --family enerdeal-api --container-definitions  '[{"portMappings": [{"hostPort": 8080, "containerPort": 8080,"protocol": "tcp"}],"volumesFrom": [],"mountPoints": [],"image": "472947443578.dkr.ecr.eu-central-1.amazonaws.com/enerdeal-api:'$IMAGE_TAG'","name": "enerdeal-api","logConfiguration": {"options": {"awslogs-region": "eu-central-1","awslogs-stream-prefix": "ecs","awslogs-group": "/ecs/enerdeal-api", "awslogs-create-group": "true"},"logDriver": "awslogs"},"environment": [],"essential": true}],"essential": true}]' --requires-compatibilities "FARGATE" --execution-role-arn arn:aws:iam::472947443578:role/ecsTaskExecutionRole --network-mode "awsvpc" --cpu 2048 --memory 4096
+          aws ecs register-task-definition --region eu-central-1 --family enerdeal-api --container-definitions  '[{"portMappings": [{"hostPort": 8080, "containerPort": 8080,"protocol": "tcp"}],"volumesFrom": [],"mountPoints": [],"image": "472947443578.dkr.ecr.eu-central-1.amazonaws.com/enerdeal-api:'$IMAGE_TAG'","name": "enerdeal-api","logConfiguration": {"options": {"awslogs-region": "eu-central-1","awslogs-stream-prefix": "ecs","awslogs-group": "/ecs/enerdeal-api", "awslogs-create-group": "true"},"logDriver": "awslogs"},"environment": [{"name": "SPRING_PROFILES_ACTIVE", "value": "dev"}], "essential": true}]' --requires-compatibilities "FARGATE" --execution-role-arn arn:aws:iam::472947443578:role/ecsTaskExecutionRole --network-mode "awsvpc" --cpu 2048 --memory 4096
      
       - name: Update ECS Service
         run: |

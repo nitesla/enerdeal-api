@@ -2,6 +2,7 @@ package com.enerdeal.service;
 
 
 import com.enerdeal.helper.API;
+import com.enerdeal.helper.ExecutorSingleton;
 import com.enerdeal.notification.requestDto.NotificationRequestDto;
 import com.enerdeal.notification.requestDto.RecipientRequest;
 import com.enerdeal.notification.requestDto.SmsRequest;
@@ -9,6 +10,9 @@ import com.enerdeal.notification.requestDto.VoiceOtpRequest;
 import com.enerdeal.notification.responseDto.NotificationResponseDto;
 import com.enerdeal.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -44,6 +52,9 @@ public class NotificationService {
 
     @Value("${mail.password}")
     private String mailPassword;
+
+    @Value("${mail.subject}")
+    private String subject;
 
     @Value("${space.sms.url}")
     private String smsNotification;
@@ -75,40 +86,40 @@ public class NotificationService {
     }
 
 
-//    public void emailNotificationRequest(NotificationRequestDto notificationRequestDto) {
-//
-//        ExecutorSingleton.getInstance().execute(() -> {
-//            try {
-//                List<InternetAddress> recipients = Arrays.asList(new InternetAddress(notificationRequestDto.getMail()));
-//                try {
-//
-//                    Email email = new SimpleEmail()
-//                            .setMsg(notificationRequestDto.getMessage())
-//                            .setTo(recipients);
-//
-//                    email.setFrom(mailFrom, mailSender);
-//                    email.setSubject(notificationRequestDto.getTitle());
-//                    email.setHostName(mailHostName);
-//                    email.setSSL(true);
-//                    email.setSSLOnConnect(true);
-//                    //email.setSmtpPort(config.getInt("mail.smtpPort"));
-//                    email.setStartTLSEnabled(false);
-//                    email.setStartTLSRequired(false);
-//                    email.setDebug(true);
-//                    email.setSSLCheckServerIdentity(false);
-//                    email.setSslSmtpPort(mailSmtpPort);
-//                    email.setAuthentication(mailUsername, mailPassword);
-//
-//                    email.send();
-//                } catch (EmailException e) {
-//                    logger.error("Error sending login credentials via email.", e);
-//                }
-//            } catch (AddressException e) {
-//                logger.error("Error", e);
-//            }
-//        });
-//
-//    }
+    public void emailNotificationRequestq(NotificationRequestDto notificationRequestDto) {
+
+        ExecutorSingleton.getInstance().execute(() -> {
+            try {
+                List<InternetAddress> recipients = Arrays.asList(new InternetAddress(notificationRequestDto.getMail()));
+                try {
+
+                    Email email = new SimpleEmail()
+                            .setMsg(notificationRequestDto.getMessage())
+                            .setTo(recipients);
+
+                    email.setFrom(mailFrom, mailSender);
+                    email.setSubject(notificationRequestDto.getTitle());
+                    email.setHostName(mailHostName);
+                    email.setSSL(true);
+                    email.setSSLOnConnect(true);
+                    //email.setSmtpPort(config.getInt("mail.smtpPort"));
+                    email.setStartTLSEnabled(false);
+                    email.setStartTLSRequired(false);
+                    email.setDebug(true);
+                    email.setSSLCheckServerIdentity(false);
+                    email.setSslSmtpPort(mailSmtpPort);
+                    email.setAuthentication(mailUsername, mailPassword);
+
+                    email.send();
+                } catch (EmailException e) {
+                    logger.error("Error sending login credentials via email.", e);
+                }
+            } catch (AddressException e) {
+                logger.error("Error", e);
+            }
+        });
+
+    }
 
     public NotificationResponseDto emailNotificationRequest (NotificationRequestDto notificationRequestDto){
         Map<String,String> map = new HashMap();

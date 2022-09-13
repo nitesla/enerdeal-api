@@ -11,16 +11,16 @@
 cloud:
   aws:
     region:
-      static: eu-west-2
+      static: eu-central-1
     stack:
       auto: false
     credentials:
-      accessKey: AKIAX4DRYAN3H6QOUQGQ
-      secretKey: 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
+      accessKey: AKIAW4HO5I55LOJMLJJH
+      secretKey: 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
 
 application:
   bucket:
-    name: sabienerdeal
+    name: enerdeal
 
 logging:
   level:

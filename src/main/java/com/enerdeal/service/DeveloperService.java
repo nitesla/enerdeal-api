@@ -17,7 +17,6 @@ import com.enerdeal.model.PreviousPasswords;
 import com.enerdeal.model.User;
 import com.enerdeal.notification.requestDto.NotificationRequestDto;
 import com.enerdeal.notification.requestDto.RecipientRequest;
-import com.enerdeal.notification.requestDto.WhatsAppRequest;
 import com.enerdeal.repo.DeveloperRepository;
 import com.enerdeal.repo.PreviousPasswordRepository;
 import com.enerdeal.repo.UserRepository;
@@ -155,11 +154,11 @@ public class DeveloperService {
 //                .build();
 //        notificationService.smsNotificationRequest(smsRequest);
 
-        WhatsAppRequest whatsAppRequest = WhatsAppRequest.builder()
-                .message("Enerdeal Account Activation Otp: " + " " + user.getResetToken())
-                .phoneNumber(emailRecipient.getPhone())
-                .build();
-        whatsAppService.whatsAppNotification(whatsAppRequest);
+//        WhatsAppRequest whatsAppRequest = WhatsAppRequest.builder()
+//                .message("Enerdeal Account Activation Otp: " + " " + user.getResetToken())
+//                .phoneNumber(emailRecipient.getPhone())
+//                .build();
+//        whatsAppService.whatsAppNotification(whatsAppRequest);
 
 //        VoiceOtpRequest voiceOtpRequest = VoiceOtpRequest.builder()
 //                .message("Enerdeal Account Activation Otp: " + " " + user.getResetToken())

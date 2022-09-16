@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -88,8 +85,41 @@ public class NotificationService {
         this.mapper = mapper;
     }
 
-
     public void emailNotificationRequest(NotificationRequestDto notificationRequestDto) {
+        final Session session = Session.getInstance(this.getEmailProperties(), new Authenticator() {
+
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(mailUsername, mailPassword);
+            }
+
+        });
+
+        try {
+            final Message message = new MimeMessage(session);
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(notificationRequestDto.getMail()));
+            message.setFrom(new InternetAddress(mailFrom, mailSender));
+            message.setSubject(subject);
+            message.setText(notificationRequestDto.getMessage());
+            message.setSentDate(new Date());
+            Transport.send(message);
+        } catch (final MessagingException ex) {
+            logger.info("Error sending email: " + ex.getMessage(), ex);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Properties getEmailProperties() {
+        final Properties config = new Properties();
+        config.put("mail.smtp.auth", "true");
+        config.put("mail.smtp.starttls.enable", "true");
+        config.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        config.put("mail.smtp.host", mailHostName);
+        config.put("mail.smtp.port", mailSmtpPort);
+        return config;
+    }
+    public void emailNotificationRequestAmazon(NotificationRequestDto notificationRequestDto) {
 
         try {
         Properties props = System.getProperties();

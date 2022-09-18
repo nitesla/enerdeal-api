@@ -652,6 +652,7 @@ public class UserService {
                 .email(emailRecipient.getEmail())
                 .build());
         notificationRequestDto.setRecipient(recipient);
+        notificationRequestDto.setMail(emailRecipient.getEmail());
         notificationService.emailNotificationRequest(notificationRequestDto);
 
 //        SmsRequest smsRequest = SmsRequest.builder()

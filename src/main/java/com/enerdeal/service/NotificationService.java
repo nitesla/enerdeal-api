@@ -24,6 +24,7 @@ import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
@@ -97,15 +98,21 @@ public class NotificationService {
 
         try {
             final Message message = new MimeMessage(session);
+            log.info("Here 1: "+ notificationRequestDto.getMail());
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(notificationRequestDto.getMail()));
+            log.info("Here 2: "+ message.getRecipients(Message.RecipientType.TO).toString());
+            log.info("Here 3: "+ new InternetAddress(notificationRequestDto.getMail()));
             message.setFrom(new InternetAddress(mailFrom, mailSender));
             message.setSubject(subject);
             message.setText(notificationRequestDto.getMessage());
             message.setSentDate(new Date());
+            log.info("Here 4: "+ message.getContent().toString());
             Transport.send(message);
         } catch (final MessagingException ex) {
             logger.info("Error sending email: " + ex.getMessage(), ex);
         } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
